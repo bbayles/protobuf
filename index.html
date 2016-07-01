@@ -1,139 +1,242 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
-  
+<!doctype html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Language" content="en-GB" />
-    <meta name="author" content="Pavel Perestoronin" />
-    <meta name="abstract" content="Pure Python implementation of Protocol Buffer." />
-    <meta name="description" content="Pure Python implementation of Protocol Buffer." />
-    <meta name="keywords" content="python, protocol, buffers, buffer" />
-    <meta name="distribution" content="global" />
-    <meta name="revisit-after" content="1 days" />	
-    <meta name="copyright" content="All content (c) Pavel Perestoronin" />
-    <link rel="publisher" href="https://plus.google.com/112524292459304605158?rel=author">
-    
+    <meta charset="utf-8">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="https://eigenein.github.io/protobuf">
+    <meta name="description" content="Protocol Buffers in Python">
+    <meta property="og:description" content="Protocol Buffers in Python">
+    <meta property="og:locale" content="en">
+    <meta property="og:site_name" content="eigenein">
+    <meta property="og:title" content="eigenein">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://eigenein.github.io/protobuf">
+    <meta property="article:author" content="Pavel Perestoronin">
+    <meta property="article:section" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:domain" content="eigenein">
+    <meta name="twitter:url" content="https://eigenein.github.io/protobuf">
+    <meta name="twitter:site" content="https://eigenein.github.io/protobuf">
+    <meta name="twitter:creator" content="Pavel Perestoronin">
+    <meta name="twitter:title" content="eigenein">
+    <meta name="twitter:description" content="Protocol Buffers in Python">
     <title>Protocol Buffers in Python</title>
-    
-    <style type="text/css" title="The shiny, Web 2.0 version of 'Simplicity,' a pseudo-professional style-sheet." media="all">
-      @import "layout/simplicity-two-oh-three.css";
-    </style>
-    <!--[if IE]>
-    <style type="text/css" media="all">
-      @import "layout/ie-diff.css";
-    </style> 
-    <![endif]-->
-
-    <link rel="stylesheet" type="text/css" href="layout/print.css" media="print" />
-    <link rel="shortcut icon" href="favicon.png"  />
-    <link rel="icon" href="favicon.png" />
-	
+    <link rel="canonical" href="https://eigenein.github.io/protobuf">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/419722b477.css">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
   </head>
-  
   <body>
-    
-    <div id="window">
-      <div id="container">
-	
-	<div id="navigation">
-	  <ul>
-	    <!-- The link you call "active" will show up as a darker tab -->
-	    <!--[if IE 6]><li></li><![endif]-->
-	    <li class="active"><span>About</span></li>
-		<li><a href="http://github.com/eigenein/protobuf/zipball/stable">Download ZIP</a></li>
-		<li><a href="http://github.com/eigenein/protobuf/tarball/stable">Download TAR</a></li>
-	  </ul>
-	</div>
-	
-	<div id="main">
-	  <div id="outer-prettification">
-	    <div id="inner-prettification">
-	      
-	      <div id="header">
-		<h1 id="title"><a href="index.html">Protocol Buffers in Python</a></h1>
-	      </div>
-	      
-	      <div id="contents">
-		<p>This project aimed to the own flexible implementation of <a href="http://code.google.com/p/protobuf/">
-		Protocol Buffers</a> in pure <a href="http://www.python.org/">Python</a>.</p>
-		<h2>Features</h2>
-		<ul>
-		  <li>Compatible with <a href="http://www.google.com">Google</a>'s one.</li>
-		  <li>Supports required, packed and packed repeated fields.</li>
-		  <li>Supports <a href="#embedded">embedded</a> messages.</li>
-		  <li>Supports <a href="#streaming">streaming</a> of several messages.</li>
-		  <li>Provides <a href="#self-describing">self-describing</a> messages.</li>
-		  <li>Easily extensible.</li>
-		</ul>
-		<h2>How to Use</h2>
-		<p>Fow now, there is full protobuf encoding implementation, so you can use the `encoding` module with full compatibility with the standard implementation.</p>
-		<div class="comment">
-		  The `encoding` module is covered with tests, but you should understand that there are may be some unknown bugs. <em>Thus, use this software at your own risk.</em>
-		</div>
-		<p>
-		  All you you need to start is to <a href="http://github.com/eigenein/protobuf/zipball/stable">
-		  download the module</a>, unzip it and write:
-		</p>
-		<div class="console">from encoding import *</div>
-		<h3>Sample 1. Introduction</h3>
-		<p>Assume you have the following definition:</p>
-		<div class="console">message Test2 {
-    string b = 2;
-}</div>
-		<p>First, you should create the message type:</p>
-		<div class="console">Test2 = MessageType()
-Test2.add_field(2, 'b', String)</div>
-		<p>Then, create a message and fill it with the appropriate data:</p>
-		
-		<p>You can serialize this easily:</p>
-		<div class="console">print msg.dumps()                    # This will dump into a string.
-msg.dump(open('/tmp/message', 'wb')) # Or any write-like object.</div>
-		<p>You also can deserialize this message with:</p>
-		<div class="console">msg = Test2.load(open('/tmp/message', 'rb'))</div>
-		<p>or with:<p>
-		<div class="console">msg = load(open('/tmp/message', 'rb'), Test2)</div>
-		<p>Easy enough :)</p>
-		<h3>Sample 2. Required field</h3>
-		<p>To add a missing field you should pass an additional `flags` parameter to `add_field` like this:</p>
-		<div class="console">Test2 = MessageType()
-Test2.add_field(2, 'b', String, flags=Flags.REQUIRED)</div>
-		<p>If you'll not fill a required field, then `ValueError` will be raised during serialization.</p>
-		<h3>Sample 3. Repeated field</h3>
-		<p>Do like this:</p>
-		<div class="console">Test2 = MessageType()
+    <section class="hero is-info">
+      <div class="hero-head">
+        <header class="nav">
+          <div class="container">
+            <div class="nav-left">
+              <a class="nav-item" href="">
+                <img src="favicon-32x32.png" alt="Logo">
+              </a>
+            </div>
+          </div>
+        </header>
+      </div>
+
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Protocol Buffers in Python</h1>
+          <h2 class="subtitle">Own flexible implementation of Protocol Buffers in pure Python</h2>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h3 class="title">Features</h3>
+        <div class="columns">
+          <div class="column is-6">
+            <div class="content">
+              <ul>
+                <li>Compatible with Google's one.</li>
+                <li>Supports required, packed and packed repeated fields.</li>
+                <li>Supports embedded messages.</li>
+                <li>Supports streaming of several messages.</li>
+                <li>Provides self-describing messages.</li>
+                <li>Easily extensible.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="column is-6 has-text-centered">
+            <a class="button is-large is-info" href="https://github.com/eigenein/protobuf" target="_blank">
+              <span class="icon">
+                <i class="fa fa-github"></i>
+              </span>
+              <span>GitHub</span>
+            </a>
+            <a class="button is-large is-info" href="https://github.com/eigenein/protobuf/fork" target="_blank">
+              <span>Fork</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h3 class="title">Introduction</h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>Hereinafter assume that everything is imported into the global namespace:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code class="python">from encoding import *</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>Assume you have the following definition:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code class="python">message Test2 {
+  string b = 2;
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>First, you should create the message type:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code class="python">Test2 = MessageType()
+Test2.add_field(2, 'b', String)</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>Then, create a message and fill it with the appropriate data:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>msg = Test2()
+msg.b = 'Hello, world'</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>You can serialize it easily:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>print msg.dumps()                     # This will dump into a string.
+msg.dump(open('/tmp/message', 'wb'))  # Or any write-like object.</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>You also can deserialize this message with:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>msg = Test2.load(open('/tmp/message', 'rb'))</code></pre>
+          </div>
+        </div>
+
+        <h3 class="title">Required field</h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <div class="content">
+              <p>
+                To add a missing field you should pass an additional
+                <code>flags</code> parameter to <code>add_field</code>.
+              </p>
+              <p>If you'll not fill in a required field, then <code>ValueError</code> will be raised during serialization.</p>
+            </div>
+          </div>
+          <div class="column is-6">
+            <pre><code>Test2 = MessageType()
+Test2.add_field(2, 'b', String, flags=Flags.REQUIRED)</code></pre>
+          </div>
+        </div>
+
+        <h3 class="title">Repeated field</h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>
+              An input value of repeated field can be any iterable object.
+              The loaded value will always be <code>list</code>.
+            </p>
+          </div>
+          <div class="column is-6">
+            <pre><code>Test2 = MessageType()
 Test2.add_field(1, 'b', UVarint, flags=Flags.REPEATED)
 msg = Test2()
-msg.b = (1, 2, 3)</div>
-		<p>A input value of repeated field can be any iterable object. The loaded value will always be `list`.</p>
-		<h3>Sample 4. Packed repeated field</h3>
-		<div class="console">Test4 = MessageType()
+msg.b = (1, 2, 3)</code></pre>
+          </div>
+        </div>
+
+        <h3 class="title">Packed repeated field</h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <!-- TODO -->
+          </div>
+          <div class="column is-6">
+            <pre><code>Test4 = MessageType()
 Test4.add_field(4, 'd', UVarint, flags=Flags.PACKED_REPEATED)
 msg = Test4()
-msg.d = (3, 270, 86942)</div>
+msg.d = (3, 270, 86942)</code></pre>
+          </div>
+        </div>
 
-		<h3 id="embedded">Sample 5. Embedded messages</h3>
-		<p>Consider the following definitions:</p>
-		<div class="console">message Test1 {
-    int32 a = 1;
-}</div>
-		<p>and:</p>
-		<div class="console">message Test3 {
-    required Test1 c = 3;
-}</div>
-		<p>To create an embedded field, pass `EmbeddedMessage` as the type of field and fill it like this:</p>
-		<div class="console"># Create the type.
+        <h2 class="title">Embedded messages</h2>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>Consider the following definitions:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>message Test1 {
+  int32 a = 1;
+}
+
+message Test3 {
+  required Test1 c = 3;
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>To create an embedded field, pass <code>EmbeddedMessage</code> as the type of field and fill it like this:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code># Create the type.
 Test1 = MessageType()
 Test1.add_field(1, 'a', UVarint)
 Test3 = MessageType()
 Test3.add_field(3, 'c', EmbeddedMessage(Test1))
-# Fill the message.
+
+# Fill in the message.
 msg = Test3()
 msg.c = Test1()
-msg.c.a = 150</div>
+msg.c.a = 150</code></pre>
+          </div>
+        </div>
 
-		<h2>Supported Data Types</h2>
-		<p>There are the following data types supported for now:</p>
-		<div class="console">UVarint             # Unsigned integer.
+        <h3 class="title">Supported Data Types</h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>There are the following data types supported for now:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>UVarint             # Unsigned integer.
 Varint              # Signed integer.
 Bool                # Boolean.
 Fixed64             # 8-byte string.
@@ -146,80 +249,97 @@ Int32               # C++'s 32-bit `int`.
 Float32             # C++'s `float`.
 Bytes               # Pure bytes string.
 Unicode             # Unicode string.
-TypeMetadata        # Type that describes another type.</div>
-		
-		<h2>Techniques</h2>
-		
-		<h3 id="streaming">Streaming messages</h3>
-		<p>The Protocol Buffer format is not self delimiting. But you can wrap you message type in `EmbeddedMessage` class and write/read it sequentially.
-		<p>The other option is to use `protobuf.EofWrapper` that has a `limit` parameter in its constructor. The `EofWrapper` raises `EOFError` when the specified number of bytes is read.</p>
-		
-		<h3 id="self-describing">Self-describing messages and TypeMetadata</h3>
-		<p>There is no any description of the message type in a message itself. Therefore, if you want to send a self-described messages, you should send the a description of the message too.</p>
-		<p>There is a way... Look:</p>
-		<div class="console">A, B, C = MessageType(), MessageType(), MessageType()
+TypeMetadata        # Type that describes another type.</code></pre>
+          </div>
+        </div>
+
+        <h3 class="title">Streaming messages</h3>
+
+        <div class="content">
+          <p>
+            The Protocol Buffer format is not self delimiting.
+            But you can wrap you message type in <code>EmbeddedMessage</code> class and write/read it sequentially.
+          </p>
+          <p>
+            The other option is to use <code>protobuf.EofWrapper</code> that has a <code>limit</code> parameter in its constructor.
+            The <code>EofWrapper</code> raises <code>EOFError</code> when the specified number of bytes is read.
+          </p>
+        </div>
+
+        <h3 class="title">Self-describing messages and <code>TypeMetadata</code></h3>
+
+        <div class="columns">
+          <div class="column is-6">
+            <p>
+              There is no any description of the message type in a message itself.
+              Therefore, if you want to send a self-described messages, you should send the a description of the message too.
+            </p>
+          </div>
+          <div class="column is-6">
+            <pre><code>A, B, C = MessageType(), MessageType(), MessageType()
 A.add_field(1, 'a', UVarint)
-A.add_field(2, 'b', TypeMetadata, flags=Flags.REPEATED) # <- Look here!
+A.add_field(2, 'b', TypeMetadata, flags=Flags.REPEATED)
 A.add_field(3, 'c', Bytes)
 B.add_field(4, 'ololo', Float32)
-B.add_field(5, 'c', TypeMetadata, flags=Flags.REPEATED) # <- And here!
+B.add_field(5, 'c', TypeMetadata, flags=Flags.REPEATED)
 B.add_field(6, 'd', Bool, flags=Flags.PACKED_REPEATED)
 C.add_field(7, 'ghjhdf', UVarint)
 msg = A()
 msg.a = 1
-msg.b = [B, C]                                          # Assigning of types.
+msg.b = [B, C]
 msg.c = 'ololo'
 bytes = msg.dumps()
 ...
 msg = A.loads(bytes)
-msg2 = msg.b[0]()                                       # Creating a message 
-                                                        # of the loaded type.</div>
-		<p>You can send your `bytes` anywhere and you'll got your message type on the other side!</p>
-		
-		<h3>add_field chaining</h3>
-		<p>`add_field` return the message type itself, thus you can do so:</p>
-		<div class="console">MessageType().add_field(1, 'a', EmbeddedMessage(MessageType()
-    .add_field(1, 'a', UVarint)))</div>
-	
-		<h2>More info</h2>
-		<p>See `protobuf` to see the API and `run-tests` modules to see more usage samples. The code is documented.</p>
-	
-		<h2>Contact Me</h2>
-		<div class="contact">
-		  <em>Pavel Perestoronin</em>
-		  <br />Electronic mail: <a href="mailto:eigenein@gmail.com"><em>eigenein@gmail.com</em></a>
-		  <br />Web-site: <a href="https://eigenein.xyz"><em>https://eigenein.xyz</em></a>
-		</div>
-	      </div>
+msg2 = msg.b[0]()</code></pre>
+          </div>
+        </div>
 
-              <div id="footer">
-		<p><a href="mailto:eigenein@gmail.com" title="Contact Me">
- 			Pavel Perestoronin &copy; 2011-2016</a>
- 		</p>
-	      </div>
-	      
-	    </div>
-	  </div>
-	</div>
+        <h3 class="title"><code>add_field</code> chaining</h3>
 
+        <div class="columns">
+          <div class="column is-6">
+            <p><code>add_field</code> return the message type itself, thus you can do in this way:</p>
+          </div>
+          <div class="column is-6">
+            <pre><code>MessageType().add_field(
+    1, 'a', EmbeddedMessage(MessageType().add_field(1, 'a', UVarint)))</code></pre>
+          </div>
+        </div>
+
+        <h3 class="title">More info</h3>
+
+        <div class="content">
+          <p>
+            See <code>protobuf</code> to see the API and <code>run-tests</code> modules to see more usage examples.
+            The code should be well-documented.
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
 
-		<!-- Google Analytics -->
-		<script>
-		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-		  ga('create', 'UA-65034198-5', 'auto');
-		  ga('send', 'pageview');
-		</script>
-		<!-- /Google Analytics -->
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p>
+            <a href="http://eigenein.me" target="_blank">Pavel Perestoronin</a> &copy; 2011-2016.
+            Made with <a href="http://bulma.io/" target="_blank">Bulma</a>.
+            Icons by <a href="https://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome</a>.
+          </p>
+        </div>
+      </div>
+    </footer>
 
-		<!-- Yandex.Metrika counter -->
-		<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter34092110 = new Ya.Metrika({ id:34092110, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="https://mc.yandex.ru/watch/34092110" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-		<!-- /Yandex.Metrika counter -->
-
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter34092110 = new Ya.Metrika({ id:34092110, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/34092110" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-65034198-5', 'auto');
+      ga('send', 'pageview');
+    </script>
   </body>
-
 </html>
