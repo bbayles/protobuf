@@ -9,7 +9,7 @@ eigenein (c) 2011
 
 from __future__ import absolute_import
 
-import StringIO
+from io import BytesIO
 import unittest
 
 from pure_protobuf.protobuf import (
@@ -149,7 +149,7 @@ class TestMessageType(unittest.TestCase):
         Test2.add_field(2, 'b', Bytes)
         msg = Test2()
         msg.b = 'testing'
-        fp = StringIO.StringIO()
+        fp = BytesIO()
         msg.dump(fp)
         self.assertEqual(fp.getvalue(), '\x12\x07\x74\x65\x73\x74\x69\x6e\x67')
 

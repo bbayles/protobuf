@@ -9,7 +9,7 @@ eigenein (c) 2011-2016
 
 from __future__ import absolute_import
 
-import cStringIO
+from io import BytesIO
 import struct
 
 # Types. ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ class Type:
         '''
         Dumps its value to string and returns this string.
         '''
-        fp = cStringIO.StringIO()
+        fp = BytesIO()
         self.dump(fp, value)
         return fp.getvalue()
 
@@ -44,7 +44,7 @@ class Type:
         '''
         Loads its value from a string and returns a read value.
         '''
-        return self.load(cStringIO.StringIO(s))
+        return self.load(BytesIO(s))
 
     def __hash__(self):
         '''
@@ -400,7 +400,7 @@ class MessageType(Type):
                 ):
                     # Repeated packed value.
                     UVarint.dump(fp, _pack_key(tag, Bytes.WIRE_TYPE))
-                    internal_fp = cStringIO.StringIO()
+                    internal_fp = BytesIO()
                     for single_value in value[self.__tags_to_names[tag]]:
                         field_type.dump(internal_fp, single_value)
                     Bytes.dump(fp, internal_fp.getvalue())
