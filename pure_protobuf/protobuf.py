@@ -7,10 +7,10 @@ Implements the Google's protobuf encoding.
 eigenein (c) 2011-2016
 '''
 
-from __future__ import absolute_import
-
 from io import BytesIO
 import struct
+
+import six
 
 # Types. ----------------------------------------------------------------------
 
@@ -64,9 +64,9 @@ class UVarintType(Type):
         shifted_value = True
         while shifted_value:
             shifted_value = value >> 7
-            fp.write(
-                chr((value & 0x7F) | (0x80 if shifted_value != 0 else 0x00))
-            )
+            data = (value & 0x7F) | (0x80 if shifted_value != 0 else 0x00)
+            write_data = six.int2byte(data)
+            fp.write(write_data)
             value = shifted_value
 
     def load(self, fp):
@@ -101,7 +101,7 @@ class BoolType(UVarintType):
     '''
 
     dump = lambda self, fp, value: fp.write(
-        '\x01' if value else '\x00'
+        b'\x01' if value else b'\x00'
     )  # Similarly to UVarint.
 
     load = lambda self, fp: UVarintType.load(self, fp) != 0
@@ -128,7 +128,7 @@ class UnicodeType(BytesType):
         self, fp, value.encode('utf-8')
     )
 
-    load = lambda self, fp: unicode(BytesType.load(self, fp), 'utf-8')
+    load = lambda self, fp: six.text_type(BytesType.load(self, fp), 'utf-8')
 
 
 class FixedLengthType(Type):
@@ -347,7 +347,7 @@ class MessageType(Type):
         '''
         Iterates over all fields.
         '''
-        for tag, name in self.__tags_to_names.iteritems():
+        for tag, name in six.iteritems(self.__tags_to_names):
             yield (tag, name, self.__tags_to_types[tag], self.__flags[tag])
 
     def add_field(self, tag, name, field_type, flags=Flags.SIMPLE):
@@ -356,6 +356,7 @@ class MessageType(Type):
         '''
         if tag in self.__tags_to_names or tag in self.__tags_to_types:
             raise ValueError('The tag %s is already used.' % tag)
+
         self.__tags_to_names[tag] = name
         self.__tags_to_types[tag] = field_type
         self.__flags[tag] = flags
@@ -389,26 +390,28 @@ class MessageType(Type):
                 'Attempting to dump an object with type that\'s different '
                 'from mine.'
             )
-        for tag, field_type in self.__tags_to_types.iteritems():
-            if self.__tags_to_names[tag] in value:
+
+        for tag, field_type in six.iteritems(self.__tags_to_types):
+            name = self.__tags_to_names[tag]
+            if name in value:
                 if self.__has_flag(tag, Flags.SINGLE, Flags.REPEATED_MASK):
                     # Single value.
                     UVarint.dump(fp, _pack_key(tag, field_type.WIRE_TYPE))
-                    field_type.dump(fp, value[self.__tags_to_names[tag]])
+                    field_type.dump(fp, value[name])
                 elif self.__has_flag(
                     tag, Flags.PACKED_REPEATED, Flags.REPEATED_MASK
                 ):
                     # Repeated packed value.
                     UVarint.dump(fp, _pack_key(tag, Bytes.WIRE_TYPE))
                     internal_fp = BytesIO()
-                    for single_value in value[self.__tags_to_names[tag]]:
+                    for single_value in value[name]:
                         field_type.dump(internal_fp, single_value)
                     Bytes.dump(fp, internal_fp.getvalue())
                 elif self.__has_flag(tag, Flags.REPEATED, Flags.REPEATED_MASK):
                     # Repeated value.
                     key = _pack_key(tag, field_type.WIRE_TYPE)
                     # Put it together sequently.
-                    for single_value in value[self.__tags_to_names[tag]]:
+                    for single_value in value[name]:
                         UVarint.dump(fp, key)
                         field_type.dump(fp, single_value)
             elif self.__has_flag(tag, Flags.REQUIRED, Flags.REQUIRED_MASK):
@@ -479,7 +482,7 @@ class MessageType(Type):
                     _wire_type_to_type_instance[wire_type].load(fp)
             except EOFError:
                 # Check if all required fields are present.
-                for tag, name in self.__tags_to_names.iteritems():
+                for tag, name in six.iteritems(self.__tags_to_names):
                     has_flag = self.__has_flag(
                         tag, Flags.REQUIRED, Flags.REQUIRED_MASK
                     )
@@ -514,7 +517,10 @@ class Message(dict):
         '''
         Gets a value of the specified message field.
         '''
-        return self.__getitem__(name)
+        try:
+            return self.__getitem__(name)
+        except KeyError:
+            raise AttributeError
 
     def __setattr__(self, name, value):
         '''
@@ -604,10 +610,10 @@ class TypeMetadataType(Type):
             1, 'tag', UVarint, flags=Flags.REQUIRED
         )
         self.__field_metadata_type.add_field(
-            2, 'name', Bytes, flags=Flags.REQUIRED
+            2, 'name', Unicode, flags=Flags.REQUIRED
         )
         self.__field_metadata_type.add_field(
-            3, 'type', Bytes, flags=Flags.REQUIRED
+            3, 'type', Unicode, flags=Flags.REQUIRED
         )
         self.__field_metadata_type.add_field(
             4, 'flags', UVarint, flags=Flags.REQUIRED

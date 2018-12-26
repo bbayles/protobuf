@@ -167,7 +167,7 @@ class TestMessageType(unittest.TestCase):
         Test2 = MessageType()
         Test2.add_field(2, 'b', Bytes)
         msg = Test2()
-        self.assertEqual(msg.dumps(), '')
+        self.assertEqual(msg.dumps(), b'')
 
     def test_dumps_3(self):
         '''
@@ -367,7 +367,7 @@ class TestTypeMetadata(unittest.TestCase):
         self.assertIsInstance(msg.t, MessageType)
         i = iter(msg.t)
         self.assertEqual(next(i), (2, 'b', Bytes, Flags.SIMPLE))
-        self.assertRaises(StopIteration, i.next)
+        self.assertRaises(StopIteration, lambda: next(i))
 
     def test_dumps_and_loads_1(self):
         '''
