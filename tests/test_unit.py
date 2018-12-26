@@ -7,8 +7,6 @@ Runs unit tests.
 eigenein (c) 2011
 '''
 
-from __future__ import absolute_import
-
 from io import BytesIO
 import unittest
 
@@ -31,99 +29,99 @@ from pure_protobuf.protobuf import (
 
 class TestUVarint(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(UVarint.dumps(0), '\x00')
+        self.assertEqual(UVarint.dumps(0), b'\x00')
 
     def test_dumps_2(self):
-        self.assertEqual(UVarint.dumps(3), '\x03')
+        self.assertEqual(UVarint.dumps(3), b'\x03')
 
     def test_dumps_3(self):
-        self.assertEqual(UVarint.dumps(270), '\x8E\x02')
+        self.assertEqual(UVarint.dumps(270), b'\x8E\x02')
 
     def test_dumps_4(self):
-        self.assertEqual(UVarint.dumps(86942), '\x9E\xA7\x05')
+        self.assertEqual(UVarint.dumps(86942), b'\x9E\xA7\x05')
 
     def test_loads_1(self):
-        self.assertEqual(UVarint.loads('\x00'), 0)
+        self.assertEqual(UVarint.loads(b'\x00'), 0)
 
     def test_loads_2(self):
-        self.assertEqual(UVarint.loads('\x03'), 3)
+        self.assertEqual(UVarint.loads(b'\x03'), 3)
 
     def test_loads_3(self):
-        self.assertEqual(UVarint.loads('\x8E\x02'), 270)
+        self.assertEqual(UVarint.loads(b'\x8E\x02'), 270)
 
     def test_loads_4(self):
-        self.assertEqual(UVarint.loads('\x9E\xA7\x05'), 86942)
+        self.assertEqual(UVarint.loads(b'\x9E\xA7\x05'), 86942)
 
 
 class TestVarint(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(Varint.dumps(0), '\x00')
+        self.assertEqual(Varint.dumps(0), b'\x00')
 
     def test_dumps_2(self):
-        self.assertEqual(Varint.dumps(-1), '\x01')
+        self.assertEqual(Varint.dumps(-1), b'\x01')
 
     def test_dumps_3(self):
-        self.assertEqual(Varint.dumps(1), '\x02')
+        self.assertEqual(Varint.dumps(1), b'\x02')
 
     def test_dumps_4(self):
-        self.assertEqual(Varint.dumps(-2), '\x03')
+        self.assertEqual(Varint.dumps(-2), b'\x03')
 
     def test_loads_1(self):
-        self.assertEqual(Varint.loads('\x00'), 0)
+        self.assertEqual(Varint.loads(b'\x00'), 0)
 
     def test_loads_2(self):
-        self.assertEqual(Varint.loads('\x01'), -1)
+        self.assertEqual(Varint.loads(b'\x01'), -1)
 
     def test_loads_3(self):
-        self.assertEqual(Varint.loads('\x02'), 1)
+        self.assertEqual(Varint.loads(b'\x02'), 1)
 
     def test_loads_4(self):
-        self.assertEqual(Varint.loads('\x03'), -2)
+        self.assertEqual(Varint.loads(b'\x03'), -2)
 
 
 class TestBool(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(Bool.dumps(True), '\x01')
-        self.assertEqual(Bool.dumps(False), '\x00')
+        self.assertEqual(Bool.dumps(True), b'\x01')
+        self.assertEqual(Bool.dumps(False), b'\x00')
 
     def test_loads_1(self):
-        self.assertEqual(Bool.loads('\x00'), False)
-        self.assertEqual(Bool.loads('\x01'), True)
+        self.assertEqual(Bool.loads(b'\x00'), False)
+        self.assertEqual(Bool.loads(b'\x01'), True)
 
 
 class TestUInt64(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(UInt64.dumps(1), '\x00\x00\x00\x00\x00\x00\x00\x01')
+        self.assertEqual(UInt64.dumps(1), b'\x00\x00\x00\x00\x00\x00\x00\x01')
 
     def test_loads_1(self):
-        self.assertEqual(UInt64.loads('\x00\x00\x00\x00\x00\x00\x00\x01'), 1)
+        self.assertEqual(UInt64.loads(b'\x00\x00\x00\x00\x00\x00\x00\x01'), 1)
 
 
 class TestInt64(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(Int64.dumps(-2), '\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFE')
+        self.assertEqual(Int64.dumps(-2), b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFE')
 
     def test_loads_1(self):
-        self.assertEqual(Int64.loads('\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFE'), -2)
+        self.assertEqual(Int64.loads(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFE'), -2)
 
 
 class TestInt32(unittest.TestCase):
     def test_dumps_1(self):
-        self.assertEqual(Int32.dumps(-2), '\xFF\xFF\xFF\xFE')
+        self.assertEqual(Int32.dumps(-2), b'\xFF\xFF\xFF\xFE')
 
     def test_loads_1(self):
-        self.assertEqual(Int32.loads('\xFF\xFF\xFF\xFE'), -2)
+        self.assertEqual(Int32.loads(b'\xFF\xFF\xFF\xFE'), -2)
 
 
 class TestBytes(unittest.TestCase):
     def test_dumps_1(self):
         self.assertEqual(
-            Bytes.dumps('testing'), '\x07\x74\x65\x73\x74\x69\x6e\x67'
+            Bytes.dumps(b'testing'), b'\x07\x74\x65\x73\x74\x69\x6e\x67'
         )
 
     def test_loads_1(self):
         self.assertEqual(
-            Bytes.loads('\x07\x74\x65\x73\x74\x69\x6e\x67'), 'testing'
+            Bytes.loads(b'\x07\x74\x65\x73\x74\x69\x6e\x67'), b'testing'
         )
 
 
@@ -131,13 +129,13 @@ class TestUnicode(unittest.TestCase):
     def test_dumps_1(self):
         self.assertEqual(
             Unicode.dumps(u'Привет'),
-            '\x0c\xd0\x9f\xd1\x80\xd0\xb8\xd0\xb2\xd0\xb5\xd1\x82',
+            b'\x0c\xd0\x9f\xd1\x80\xd0\xb8\xd0\xb2\xd0\xb5\xd1\x82',
         )
 
     def test_loads_1(self):
         self.assertEqual(
             Unicode.loads(
-                '\x0c\xd0\x9f\xd1\x80\xd0\xb8\xd0\xb2\xd0\xb5\xd1\x82'
+                b'\x0c\xd0\x9f\xd1\x80\xd0\xb8\xd0\xb2\xd0\xb5\xd1\x82'
             ),
             u'Привет',
         )
@@ -148,17 +146,19 @@ class TestMessageType(unittest.TestCase):
         Test2 = MessageType()
         Test2.add_field(2, 'b', Bytes)
         msg = Test2()
-        msg.b = 'testing'
+        msg.b = b'testing'
         fp = BytesIO()
         msg.dump(fp)
-        self.assertEqual(fp.getvalue(), '\x12\x07\x74\x65\x73\x74\x69\x6e\x67')
+        self.assertEqual(
+            fp.getvalue(), b'\x12\x07\x74\x65\x73\x74\x69\x6e\x67'
+        )
 
     def test_dumps_1(self):
         Test2 = MessageType()
         Test2.add_field(2, 'b', Bytes)
         msg = Test2()
-        msg.b = 'testing'
-        self.assertEqual(msg.dumps(), '\x12\x07\x74\x65\x73\x74\x69\x6e\x67')
+        msg.b = b'testing'
+        self.assertEqual(msg.dumps(), b'\x12\x07\x74\x65\x73\x74\x69\x6e\x67')
 
     def test_dumps_2(self):
         '''
@@ -187,7 +187,7 @@ class TestMessageType(unittest.TestCase):
         Test2.add_field(1, 'b', UVarint, flags=Flags.REPEATED)
         msg = Test2()
         msg.b = (1, 2, 3)
-        self.assertEqual(msg.dumps(), '\x08\x01\x08\x02\x08\x03')
+        self.assertEqual(msg.dumps(), b'\x08\x01\x08\x02\x08\x03')
 
     def test_dumps_5(self):
         '''
@@ -197,7 +197,7 @@ class TestMessageType(unittest.TestCase):
         Test4.add_field(4, 'd', UVarint, flags=Flags.PACKED_REPEATED)
         msg = Test4()
         msg.d = (3, 270, 86942)
-        self.assertEqual(msg.dumps(), '\x22\x06\x03\x8E\x02\x9E\xA7\x05')
+        self.assertEqual(msg.dumps(), b'\x22\x06\x03\x8E\x02\x9E\xA7\x05')
 
     def test_loads_1(self):
         '''
@@ -205,7 +205,7 @@ class TestMessageType(unittest.TestCase):
         '''
         Test2 = MessageType()
         Test2.add_field(2, 'b', Bytes)
-        msg = Test2.loads('')
+        msg = Test2.loads(b'')
         self.assertNotIn('b', msg)
 
     def test_loads_1_1(self):
@@ -215,7 +215,7 @@ class TestMessageType(unittest.TestCase):
         Test2 = MessageType()
         Test2.add_field(2, 'b', Bytes, flags=Flags.REQUIRED)
         with self.assertRaises(ValueError):
-            Test2.loads('')
+            Test2.loads(b'')
 
     def test_loads_2(self):
         '''
@@ -224,7 +224,7 @@ class TestMessageType(unittest.TestCase):
         '''
         Test2 = MessageType()
         Test2.add_field(1, 'b', UVarint)
-        msg = Test2.loads('\x08\x01\x08\x02\x08\x03')
+        msg = Test2.loads(b'\x08\x01\x08\x02\x08\x03')
         self.assertEquals(msg.b, 3)
 
     def test_loads_3(self):
@@ -233,7 +233,7 @@ class TestMessageType(unittest.TestCase):
         '''
         Test2 = MessageType()
         Test2.add_field(1, 'b', UVarint, flags=Flags.REPEATED)
-        msg = Test2.loads('\x08\x01\x08\x02\x08\x03')
+        msg = Test2.loads(b'\x08\x01\x08\x02\x08\x03')
         self.assertIn('b', msg)
         self.assertEquals(msg.b, [1, 2, 3])
 
@@ -243,7 +243,7 @@ class TestMessageType(unittest.TestCase):
         '''
         Test4 = MessageType()
         Test4.add_field(4, 'd', UVarint, flags=Flags.PACKED_REPEATED)
-        msg = Test4.loads('\x22\x06\x03\x8E\x02\x9E\xA7\x05')
+        msg = Test4.loads(b'\x22\x06\x03\x8E\x02\x9E\xA7\x05')
         self.assertIn('d', msg)
         self.assertEquals(msg.d, [3, 270, 86942])
 
@@ -283,7 +283,7 @@ class TestMessageType(unittest.TestCase):
         '''
         Type1 = MessageType()
         Type1.add_field(1, 'a', Bytes)
-        msg = Type1.loads('\n\x00')
+        msg = Type1.loads(b'\n\x00')
         self.assertEqual(msg.a, '')
 
     def test_delattr(self):
@@ -293,7 +293,7 @@ class TestMessageType(unittest.TestCase):
         message_type = MessageType()
         message_type.add_field(2, 'b', Bytes)
         message = message_type()
-        message.b = 'testing'
+        message.b = b'testing'
         del message.b
         self.assertFalse(hasattr(message, 'b'))
 
@@ -310,7 +310,7 @@ class TestEmbeddedMessage(unittest.TestCase):
         msg = Test3()
         msg.c = Test1()
         msg.c.a = 150
-        self.assertEqual(msg.dumps(), '\x1a\x03\x08\x96\x01')
+        self.assertEqual(msg.dumps(), b'\x1a\x03\x08\x96\x01')
 
     def test_dumps_and_loads(self):
         '''
@@ -336,7 +336,7 @@ class TestEmbeddedMessage(unittest.TestCase):
         Test1.add_field(1, 'a', UVarint)
         Test3 = MessageType()
         Test3.add_field(3, 'c', EmbeddedMessage(Test1))
-        msg = Test3.loads('\x1a\x03\x08\x96\x01')
+        msg = Test3.loads(b'\x1a\x03\x08\x96\x01')
         self.assertIn('c', msg)
         self.assertIn('a', msg.c)
         self.assertEqual(msg.c.a, 150)
@@ -354,7 +354,7 @@ class TestTypeMetadata(unittest.TestCase):
         msg = Type1()
         msg.t = Test2
         self.assertEqual(
-            msg.dumps(), '\n\x10\n\x0e\x08\x02\x12\x01b\x1a\x05Bytes \x00'
+            msg.dumps(), b'\n\x10\n\x0e\x08\x02\x12\x01b\x1a\x05Bytes \x00'
         )
 
     def test_loads_1(self):
@@ -363,7 +363,7 @@ class TestTypeMetadata(unittest.TestCase):
         '''
         Type1 = MessageType()
         Type1.add_field(1, 't', TypeMetadata)
-        msg = Type1.loads('\n\x10\n\x0e\x08\x02\x12\x01b\x1a\x05Bytes \x00')
+        msg = Type1.loads(b'\n\x10\n\x0e\x08\x02\x12\x01b\x1a\x05Bytes \x00')
         self.assertIsInstance(msg.t, MessageType)
         i = iter(msg.t)
         self.assertEqual(next(i), (2, 'b', Bytes, Flags.SIMPLE))
@@ -378,9 +378,9 @@ class TestTypeMetadata(unittest.TestCase):
         A.add_field(2, 'b', TypeMetadata)
         A.add_field(3, 'c', Bytes)
         msg = A()
-        msg.a = '!'
+        msg.a = b'!'
         msg.b = B
-        msg.c = '!'
+        msg.c = b'!'
         bytes = msg.dumps()
         msg = A.loads(bytes)
         self.assertEqual(hash(msg.b), hash(B))
@@ -400,7 +400,7 @@ class TestTypeMetadata(unittest.TestCase):
         msg = A()
         msg.a = 1
         msg.b = [B, C]
-        msg.c = 'ololo'
+        msg.c = b'ololo'
         bytes = msg.dumps()
         msg = A.loads(bytes)
         self.assertEqual(hash(msg.b[0]), hash(B))
