@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, print_function
+
 import timeit
+
+import six
 
 from pure_protobuf.protobuf import (
     Bool,
@@ -43,7 +46,7 @@ def runtests():
         for args, kwargs in test_cases[target]:
             args_str = ', '.join(repr(arg) for arg in args)
             kwargs_str = ', '.join(
-                '%s=%s' % (k, repr(v)) for k, v in kwargs.iteritems()
+                '%s=%s' % (k, repr(v)) for k, v in six.iteritems(kwargs)
             )
             allargs_str = args_str
             allargs_str += (
@@ -92,9 +95,9 @@ def test_uvarint_dump(value):
 
 
 @test('UVarint loads')
-@testcase('\x03')
-@testcase('\x8E\x02')
-@testcase('\x9E\xA7\x05')
+@testcase(b'\x03')
+@testcase(b'\x8E\x02')
+@testcase(b'\x9E\xA7\x05')
 def test_uvarint_loads(value):
     UVarint.loads(value)
 
@@ -108,9 +111,9 @@ def test_varint_dump(value):
 
 
 @test('Varint loads')
-@testcase('\x01')
-@testcase('\x02')
-@testcase('\x9E\xA7\x05')
+@testcase(b'\x01')
+@testcase(b'\x02')
+@testcase(b'\x9E\xA7\x05')
 def test_varint_loads(value):
     Varint.loads(value)
 
